@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 using VoiceTexterBot;
+using VoiceTexterBot.Controllers;
 
 internal class Program
 {
@@ -24,6 +25,8 @@ internal class Program
 
     static void ConfigureServices(IServiceCollection services)
     {
+        services.AddTransient<TextMessageController>();
+        
         // Регистрируем объект TelegramBotClient c токеном подключения
         services.AddSingleton<ITelegramBotClient>(provider => new TelegramBotClient("6776734156:AAFGlUBuMBSU8Cdlf77hJNHm_SpF6nJ7LaM"));
         // Регистрируем постоянно активный сервис бота
