@@ -25,11 +25,13 @@ internal class Program
 
     static void ConfigureServices(IServiceCollection services)
     {
+        // Подключаем контроллеры сообщений и кнопок
+        services.AddTransient<DefaultMessageController>();
+        services.AddTransient<VoiceMessageController>();
         services.AddTransient<TextMessageController>();
-        
-        // Регистрируем объект TelegramBotClient c токеном подключения
-        services.AddSingleton<ITelegramBotClient>(provider => new TelegramBotClient("6776734156:AAFGlUBuMBSU8Cdlf77hJNHm_SpF6nJ7LaM"));
-        // Регистрируем постоянно активный сервис бота
+        services.AddTransient<InlineKeyboardController>();
+
+        services.AddSingleton<ITelegramBotClient>(provider => new TelegramBotClient("5353047760:AAECHVcGyM-cQJIfA4sCStnGDBPimhlIV-g"));
         services.AddHostedService<Bot>();
     }
 }
