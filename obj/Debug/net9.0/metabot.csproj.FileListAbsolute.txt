@@ -1,0 +1,14 @@
+C:\projects\metabot\metabot\bin\Debug\net9.0\metabot.exe
+C:\projects\metabot\metabot\bin\Debug\net9.0\metabot.deps.json
+C:\projects\metabot\metabot\bin\Debug\net9.0\metabot.runtimeconfig.json
+C:\projects\metabot\metabot\bin\Debug\net9.0\metabot.dll
+C:\projects\metabot\metabot\bin\Debug\net9.0\metabot.pdb
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.GeneratedMSBuildEditorConfig.editorconfig
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.AssemblyInfoInputs.cache
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.AssemblyInfo.cs
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.csproj.CoreCompileInputs.cache
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.dll
+C:\projects\metabot\metabot\obj\Debug\net9.0\refint\metabot.dll
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.pdb
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.genruntimeconfig.cache
+C:\projects\metabot\metabot\obj\Debug\net9.0\ref\metabot.dll
