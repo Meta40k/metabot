@@ -2,9 +2,18 @@
 
 internal class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
-        var bot = new BotService("dsfds");
-        bot.StartAsync();
+        var token = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN_SIRI");
+
+        if (string.IsNullOrEmpty(token))
+        {
+            Console.WriteLine("Please enter the TELEGRAM_BOT_TOKEN environment variable");
+            return;
+        }
+        
+        
+        var bot = new BotService(token);
+        await bot.StartAsync();
     }
 }
