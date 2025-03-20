@@ -12,3 +12,6 @@ C:\projects\metabot\metabot\obj\Debug\net9.0\refint\metabot.dll
 C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.pdb
 C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.genruntimeconfig.cache
 C:\projects\metabot\metabot\obj\Debug\net9.0\ref\metabot.dll
+C:\projects\metabot\metabot\bin\Debug\net9.0\Telegram.Bot.dll
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.csproj.AssemblyReference.cache
+C:\projects\metabot\metabot\obj\Debug\net9.0\metabot.csproj.Up2Date

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("metabot")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4195a08357113ed4c7810e4eec94b2e3dc41932b")]
 [assembly: System.Reflection.AssemblyProductAttribute("metabot")]
 [assembly: System.Reflection.AssemblyTitleAttribute("metabot")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

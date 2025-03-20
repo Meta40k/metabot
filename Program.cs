@@ -1,7 +1,10 @@
-﻿internal class Program
+﻿using metabot;
+
+internal class Program
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        var bot = new BotService("dsfds");
+        bot.StartAsync();
     }
 }
