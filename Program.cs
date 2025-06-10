@@ -1,4 +1,6 @@
 ﻿
+using System;
+using System.Threading.Tasks;
 using metabot;
 
 internal class Program
