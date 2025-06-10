@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
+namespace metabot;
+
 public class AppDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }

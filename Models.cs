@@ -1,6 +1,7 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
+namespace metabot;
 
 [Table("users", Schema = "bot_data")]
 public class User
