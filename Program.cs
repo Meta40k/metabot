@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using metabot;
+using metabot.Services;
 
 internal class Program
 {
@@ -20,8 +21,9 @@ internal class Program
                 return;
             }
         
-        
-            var bot = new BotService(token, dbcontext);
+            var contextProvider = new ChatContextProvider();
+            
+            var bot = new BotService(token, dbcontext, contextProvider);
             await bot.StartAsync();
         }
     }

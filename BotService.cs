@@ -2,10 +2,13 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using metabot.Models;
+using metabot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Message = metabot.Models.Message;
 
 namespace metabot;
 
@@ -13,11 +16,14 @@ public class BotService
 {
     private readonly TelegramBotClient _botClient;
     private readonly AppDbContext _dbContext;
+    private readonly IChatContextProvider _chatContextProvider;
 
-    public BotService(string token, AppDbContext dbContext)
+
+    public BotService(string token, AppDbContext dbContext, IChatContextProvider contextProvider)
     {
         _botClient = new TelegramBotClient(token);
         _dbContext = dbContext;
+        _chatContextProvider = contextProvider;
     }
 
     public async Task StartAsync()
@@ -37,11 +43,40 @@ public class BotService
         await Task.Delay(-1);
     }
 
-    private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
+        CancellationToken cancellationToken)
     {
         if (update.Message is not { } message) return;
 
-        Console.WriteLine($"📩 Новое сообщение от {message.From?.Username ?? "Неизвестный"}: {message.Text ?? "[Медиафайл]"}");
+        Console.WriteLine(
+            $"📩 Новое сообщение от {message.From?.Username ?? "Неизвестный"}: {message.Text ?? "[Медиафайл]"}");
+
+        var dispatcher = new CommandDispatcher(_dbContext, _botClient, _chatContextProvider);
+        await dispatcher.HandleAsync(message);
+
+        Console.WriteLine(message.Text);
+
+        if (message.Chat.Id == -1002878092364) //Буря
+        //if (message.Chat.Id == -1002468212306)
+        {
+            if (message.From == null) return;
+            
+            var stormUser = _dbContext.StormSquads
+                .FirstOrDefault(stormUser => message.From != null && stormUser.UserId == message.From.Id);
+            
+            if (stormUser == null)
+            {
+                stormUser = new StormSquad
+                {
+                    UserId = message.From.Id,
+                    username = message.From.Username,
+                    FirstName = message.From.FirstName,
+                    LastName = message.From.LastName
+                };
+                _dbContext.StormSquads.Add(stormUser);
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+        }
 
         // Проверяем, есть ли пользователь в БД
         var user = _dbContext.Users.FirstOrDefault(u => u.user_id == message.From.Id);
@@ -55,7 +90,7 @@ public class BotService
                 last_name = message.From.LastName
             };
             _dbContext.Users.Add(user);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
 
         // Определяем тип сообщения
@@ -96,21 +131,28 @@ public class BotService
         // Сохраняем сообщение
         var newMessage = new Message
         {
-            chat_id = message.Chat.Id,
-            user_id = user.user_id,
-            message_type = messageType,
-            message_text = message.Text,
-            file_id = fileId,
-            file_size = fileSize,
-            mime_type = mimeType
+            ChatId = message.Chat.Id,
+            UserId = user.user_id,
+            MessageType = messageType,
+            MessageText = message.Text,
+            FileId = fileId,
+            FileSize = fileSize,
+            MimeType = mimeType,
+            Username = message.From?.Username,
+            ThreadId = message.MessageThreadId
         };
         _dbContext.Messages.Add(newMessage);
         await _dbContext.SaveChangesAsync();
     }
 
-    private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception,
+        CancellationToken cancellationToken)
     {
-        Console.WriteLine($"❌ Ошибка Telegram API: {exception.Message}");
+        Console.WriteLine("❌ Ошибка Telegram API: " + exception.Message);
+
+        if (exception.InnerException != null)
+            Console.WriteLine("🔍 Внутренняя ошибка: " + exception.InnerException.Message);
+
         return Task.CompletedTask;
     }
 }
