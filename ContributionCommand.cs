@@ -36,16 +36,16 @@ public class ContributionCommand
         var comment = parts.Length >= 4 ? parts[3] : "";
 
         var user1 = await _db.Users.FirstOrDefaultAsync(u => u.username.ToLower() == username.ToLower());
-        var user = await _db.StormSquads.FirstOrDefaultAsync(u => u.username.ToLower() == username.ToLower());
+        var user = await _db.StormSquad.FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower());
         
         if (user == null)
         {
             user = new StormSquad()
             {
-                username = username,
+                Username = username,
                 FirstName = username
             };
-            _db.StormSquads.Add(user);
+            _db.StormSquad.Add(user);
             await _db.SaveChangesAsync();
         }
 
@@ -59,6 +59,6 @@ public class ContributionCommand
         await _db.SaveChangesAsync();
 
         await _bot.SendTextMessageAsync(message.Chat.Id,
-            $"✅ Взнос принят: @{user.username}, {amount}₽. {comment}");
+            $"✅ Взнос принят: @{user.Username}, {amount}₽. {comment}");
     }
 }

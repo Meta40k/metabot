@@ -24,6 +24,8 @@ public class BotService
         _botClient = new TelegramBotClient(token);
         _dbContext = dbContext;
         _chatContextProvider = contextProvider;
+
+        TelegramGroups.STORMSQUAD = _dbContext.TelegramGroups.First(group => group.Title == "STORMSQUAD");
     }
 
     public async Task StartAsync()
@@ -56,12 +58,11 @@ public class BotService
 
         Console.WriteLine(message.Text);
 
-        if (message.Chat.Id == -1002878092364) //Буря
-        //if (message.Chat.Id == -1002468212306)
+        if (message.Chat.Id == TelegramGroups.STORMSQUAD.ChatId)
         {
             if (message.From == null) return;
             
-            var stormUser = _dbContext.StormSquads
+            var stormUser = _dbContext.StormSquad
                 .FirstOrDefault(stormUser => message.From != null && stormUser.UserId == message.From.Id);
             
             if (stormUser == null)
@@ -69,11 +70,11 @@ public class BotService
                 stormUser = new StormSquad
                 {
                     UserId = message.From.Id,
-                    username = message.From.Username,
+                    Username = message.From.Username,
                     FirstName = message.From.FirstName,
                     LastName = message.From.LastName
                 };
-                _dbContext.StormSquads.Add(stormUser);
+                _dbContext.StormSquad.Add(stormUser);
                 await _dbContext.SaveChangesAsync(cancellationToken);
             }
         }

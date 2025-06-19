@@ -40,6 +40,12 @@ public class CommandDispatcher
            var handler = new Info(_db, _bot, _chatContextProvider);
            await handler.GetInvoice(message);
         }
+        else if (message.Text.StartsWith("/долг"))
+        {
+            var handler = new WhoDidNotContributeCommand(_db, _bot);
+            await handler.ExecuteAsync(message);
+        }
+
         else
         {
             // если будет нужно — логика по умолчанию

@@ -23,10 +23,8 @@ public class BalanceCommand
     public async Task ExecuteAsync(Telegram.Bot.Types.Message message)
     {
         var context = _chatContextProvider.GetContext(message);
-
-        // Допустим, только в суперчате StormSquad разрешён просмотр баланса
-        //if (context.ChatId == -1002878092364 && context.ThreadId == null)
-        if (context.ChatId == -1002878092364 && context.ThreadId == null)
+        
+        if (context.ChatId == TelegramGroups.STORMSQUAD.ChatId && context.ThreadId == null)
         {
             var totalIn = _db.Contributions.Sum(c => c.Amount);
             var totalOut = _db.Expenses.Sum(e => e.Amount);
@@ -47,8 +45,5 @@ public class BalanceCommand
         Console.WriteLine(context.ChatId);
         Console.WriteLine(context.ThreadId);
         Console.WriteLine(context.Username);
-        
-
-
     }
 }

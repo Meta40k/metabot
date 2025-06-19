@@ -19,23 +19,26 @@ public class Info
     {
         var context = _chatContextProvider.GetContext(message);
 
-        if (context.ChatId == -1002878092364 && context.ThreadId == null)
+        if (context.ChatId == TelegramGroups.STORMSQUAD.ChatId && context.ThreadId == null)
         {
             var totalIn = _db.Contributions.Sum(c => c.Amount);
             var totalOut = _db.Expenses.Sum(e => e.Amount);
             var balance = totalIn - totalOut;
-            
-            await _bot.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text:
-                $"💳 *Счёт для пополнения:*\n\n" +
-                $"`+79300630127`\n" +
-                $"OZON БАНК\n" +
-                $"получатель Денис Л.\n" +
-                $"--------------------\n" +
-                $"*Баланс:* {balance}₽",
-                parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown
-            );
+            var den = _db.Persons.FirstOrDefault(person => person.Name == "Денис");
+
+
+            if (den != null)
+                await _bot.SendTextMessageAsync(
+                    chatId: message.Chat.Id,
+                    text:
+                    $"💳 *Счёт для пополнения:*\n\n" +
+                    $"`+{den.PhoneNumber}`\n" +
+                    $"{den.Bank} БАНК\n" +
+                    $"получатель {den.Name} Л.\n" +
+                    $"--------------------\n" +
+                    $"*Баланс:* {balance}₽",
+                    parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown
+                );
         }
         
     }

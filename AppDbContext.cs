@@ -8,9 +8,11 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Contribution> Contributions { get; set; }
-    
     public DbSet<Expense> Expenses { get; set; }
-    public DbSet<StormSquad> StormSquads { get; set; }
+    public DbSet<StormSquad> StormSquad { get; set; }
+    public DbSet<TelegramGroup> TelegramGroups { get; set; }
+    
+    public DbSet<Person> Persons { get; set; }
 
     private readonly string _connectionString;
 
