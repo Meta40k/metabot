@@ -1,3 +1,17 @@
 bin/
 obj/
 .idea/
+.env/
+
+# Docker
+docker-compose.override.yml
+Dockerfile*
+
+# Others
+*.db
+*.sqlite
+*.pdb
+*.mdb
+*.bak
+*.swp
+*.tmp
