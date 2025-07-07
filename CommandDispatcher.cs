@@ -42,7 +42,7 @@ public class CommandDispatcher
         }
         else if (message.Text.StartsWith("/долг"))
         {
-            var handler = new WhoDidNotContributeCommand(_db, _bot);
+            var handler = new WhoDidNotContributeCommand(_db, _bot, _chatContextProvider);
             await handler.ExecuteAsync(message);
         }
 

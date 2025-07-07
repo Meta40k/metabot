@@ -19,7 +19,8 @@ public class Info
     {
         var context = _chatContextProvider.GetContext(message);
 
-        if (context.ChatId == TelegramGroups.STORMSQUAD.ChatId && context.ThreadId == null)
+        if ((context.ChatId == TelegramGroups.STORMSQUAD.ChatId && context.ThreadId == null) ||
+            (context.ChatId == TelegramGroups.SANSARA.ChatId))
         {
             var totalIn = _db.Contributions.Sum(c => c.Amount);
             var totalOut = _db.Expenses.Sum(e => e.Amount);

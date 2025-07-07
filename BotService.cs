@@ -26,6 +26,7 @@ public class BotService
         _chatContextProvider = contextProvider;
 
         TelegramGroups.STORMSQUAD = _dbContext.TelegramGroups.First(group => group.Title == "STORMSQUAD");
+        TelegramGroups.SANSARA = _dbContext.TelegramGroups.First(group => group.Title == "SANSARA");
     }
 
     public async Task StartAsync()

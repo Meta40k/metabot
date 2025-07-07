@@ -23,6 +23,9 @@ public class StormSquad
     [Column("last_name")]
     public string? LastName { get; set; }
     
+    [Column("iscontributing")]
+    public bool IsContributing { get; set; } = true;
+    
     [Column("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
