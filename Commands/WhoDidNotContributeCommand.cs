@@ -35,7 +35,7 @@ public class WhoDidNotContributeCommand
                 .ToListAsync();
         
         
-            var allUsers = await _db.StormSquad.Where(user => user.IsContributing == true).ToListAsync();
+            var allUsers = await _db.StormSquad.ToListAsync();
         
         
             var sb = new StringBuilder();
@@ -49,8 +49,10 @@ public class WhoDidNotContributeCommand
                     .ToListAsync();
 
                 var nonPayers = allUsers
+                    .Where(u => u.IsContributing) // ← только те, кто должен участвовать
                     .Where(u => !paidUserIds.Contains(u.Id))
                     .ToList();
+
 
                 if (nonPayers.Count == 0)
                 {
