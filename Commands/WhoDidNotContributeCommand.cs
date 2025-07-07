@@ -1,4 +1,5 @@
 using System.Text;
+using metabot.Services;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
@@ -9,74 +10,74 @@ public class WhoDidNotContributeCommand
 {
     private readonly AppDbContext _db;
     private readonly ITelegramBotClient _bot;
+    private readonly IChatContextProvider _chatContextProvider;
 
-    public WhoDidNotContributeCommand(AppDbContext db, ITelegramBotClient botClient)
+    public WhoDidNotContributeCommand(AppDbContext db, ITelegramBotClient botClient, IChatContextProvider contextProvider)
     {
         _db = db;
         _bot = botClient;
+        _chatContextProvider = contextProvider;
+        
     }
 
     public async Task ExecuteAsync(Telegram.Bot.Types.Message message)
     {
-        var allTags = await   _db.Contributions
-            .Where(c => EF.Functions.Like(c.Comment, "Общий сбор%"))
-            .Select(c => c.Comment)
-            .Distinct()
-            .OrderBy(c => c)
-            .ToListAsync();
+        var context = _chatContextProvider.GetContext(message);
         
-        var test = await _db.Contributions
-            .Where(c => EF.Functions.Like(c.Comment, "Общий сбор%"))
-            .Select(c => c.Comment)
-            .ToListAsync();
-
-        foreach (var item in test)
+        if ((context.ChatId == TelegramGroups.STORMSQUAD.ChatId && context.ThreadId == null) ||
+            (context.ChatId == TelegramGroups.SANSARA.ChatId))
         {
-            Console.WriteLine(item);
-            
-        }
-        
-        var allUsers = await _db.StormSquad.Where(user => user.Id != 11).ToListAsync();
-        
-        
-        var sb = new StringBuilder();
-        
-        foreach (var tag in allTags)
-        {
-            var paidUserIds = await _db.Contributions
-                .Where(c => c.Comment == tag)
-                .Select(c => c.StormSquadId)
+            var allTags = await   _db.Contributions
+                .Where(c => EF.Functions.Like(c.Comment, "Общий сбор%"))
+                .Select(c => c.Comment)
                 .Distinct()
+                .OrderBy(c => c)
                 .ToListAsync();
-
-            var nonPayers = allUsers
-                .Where(u => !paidUserIds.Contains(u.Id))
-                .ToList();
-
-            if (nonPayers.Count == 0)
+        
+        
+            var allUsers = await _db.StormSquad.Where(user => user.IsContributing == true).ToListAsync();
+        
+        
+            var sb = new StringBuilder();
+        
+            foreach (var tag in allTags)
             {
-                sb.AppendLine($"✅ *{tag}*: Все сдали");
-            }
-            else
-            {
-                sb.AppendLine($"🚫 *{tag}*");
-                foreach (var u in nonPayers)
+                var paidUserIds = await _db.Contributions
+                    .Where(c => c.Comment == tag)
+                    .Select(c => c.StormSquadId)
+                    .Distinct()
+                    .ToListAsync();
+
+                var nonPayers = allUsers
+                    .Where(u => !paidUserIds.Contains(u.Id))
+                    .ToList();
+
+                if (nonPayers.Count == 0)
                 {
-                    sb.AppendLine($"{u.FirstName}" +
-                                  (string.IsNullOrWhiteSpace(u.Username) ? "" : $" (@{u.Username})"));
+                    sb.AppendLine($"✅ *{tag}*: Все сдали");
                 }
-                sb.AppendLine();
+                else
+                {
+                    sb.AppendLine($"🚫 *{tag}*");
+                    foreach (var u in nonPayers)
+                    {
+                        sb.AppendLine($"{u.FirstName}" +
+                                      (string.IsNullOrWhiteSpace(u.Username) ? "" : $" (@{u.Username})"));
+                    }
+                    sb.AppendLine();
+                }
             }
-        }
 
-        sb.Append("----------\n");
-        sb.Append("Узнать реквизиты\n");
-        sb.Append("Команда:   /счет\n");
+            sb.Append("----------\n");
+            sb.Append("Узнать реквизиты\n");
+            sb.Append("Команда:   /счет\n");
         
         
-        await _bot.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: sb.ToString()
-        );
+            await _bot.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: sb.ToString()
+            );
+        }
+        
     }
 }
