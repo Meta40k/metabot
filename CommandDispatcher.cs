@@ -24,12 +24,12 @@ public class CommandDispatcher
         if (message == null) throw new ArgumentNullException(nameof(message));
         if (message.Text == null) return;
 
-        if (message.Text.StartsWith("/взнос"))
-        {
-            Console.WriteLine("ВЗНОС");
-            var handler = new ContributionCommand(_db, _bot);
-            await handler.ExecuteAsync(message);
-        }
+        // if (message.Text.StartsWith("/взнос"))
+        // {
+        //     Console.WriteLine("ВЗНОС");
+        //     var handler = new ContributionCommand(_db, _bot);
+        //     await handler.ExecuteAsync(message);
+        // }
         else if (message.Text.StartsWith("/баланс"))
         {
             var handler = new BalanceCommand(_db, _bot, _chatContextProvider);
@@ -39,11 +39,6 @@ public class CommandDispatcher
         {
            var handler = new Info(_db, _bot, _chatContextProvider);
            await handler.GetInvoice(message);
-        }
-        else if (message.Text.StartsWith("/долг"))
-        {
-            var handler = new WhoDidNotContributeCommand(_db, _bot, _chatContextProvider);
-            await handler.ExecuteAsync(message);
         }
 
         else

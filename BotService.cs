@@ -52,14 +52,20 @@ public class BotService
         if (update.Message is not { } message) return;
 
         Console.WriteLine(
-            $"📩 Новое сообщение от {message.From?.Username ?? "Неизвестный"}: {message.Text ?? "[Медиафайл]"}");
-
+            $"📩 Новое сообщение от {message.From?.Username ?? "Неизвестный"}: \n " +
+            $"{message.Text ?? "[Медиафайл]"}" + 
+            $"\n{message.Chat.Title ?? "личное сообщение"}  {message.Chat.Id}");
+        if (message.MessageThreadId != null)
+        {
+            Console.WriteLine($"Подгруппа: {message.MessageThreadId}");
+        }
+        Console.WriteLine("-----------------------");
+        
         var dispatcher = new CommandDispatcher(_dbContext, _botClient, _chatContextProvider);
         await dispatcher.HandleAsync(message);
+        
 
-        Console.WriteLine(message.Text);
-
-        if (message.Chat.Id == TelegramGroups.STORMSQUAD.ChatId)
+        if (message.Chat.Id == TelegramGroups.STORMSQUAD.ChatId || message.Chat.Id == TelegramGroups.SANSARA.ChatId)
         {
             if (message.From == null) return;
             
@@ -77,6 +83,26 @@ public class BotService
                 };
                 _dbContext.StormSquad.Add(stormUser);
                 await _dbContext.SaveChangesAsync(cancellationToken);
+                Console.WriteLine($"Пользователь: {stormUser.Username}, {stormUser.FirstName} {stormUser.LastName} добавлен в базу");
+            }
+
+            var userBeenChanged = false;
+            
+            if (stormUser.FirstName != message.From.FirstName)
+            {
+                userBeenChanged = true;
+                stormUser.FirstName = message.From.FirstName;
+            }            
+            if (stormUser.LastName != message.From.LastName)
+            {
+                userBeenChanged = true;
+                stormUser.LastName = message.From.LastName;
+            }
+            
+            if(userBeenChanged)
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+                Console.WriteLine($"Пользователь {stormUser.Username} изменён");
             }
         }
 
